@@ -25,13 +25,14 @@ function App() {
   const InputHanlder = (text) => {
     setInput(text)
   }
+
   useEffect(() => {
     const image = userName.split(" ")
     setUserImage(`${image[0][0].toUpperCase()} ${image[1][0].toUpperCase()} `)
-  })
+  }, [])
+
   const clickHandler = () => {
     let createId = Math.floor(Math.random() * 1000)
-
     if (input === "" || !selectDate) {
       Alert.alert("Please Enter Task and Date")
     } else {
@@ -40,7 +41,6 @@ function App() {
         id: createId,
         completed: false,
         cretedDate: date
-
       }
       setData([...data, typeData])
       setInput("")
@@ -49,27 +49,27 @@ function App() {
       inputRef.current.close()
     }
   }
+
   const inputHandler = () => {
     inputRef.current.show()
   }
 
-
   const openDateHandler = () => {
     setOpen(true)
   }
-const closePopup=()=>{
-  inputRef.current.close()
-  setInput("")
-  setDate(new Date())
-  setSelectedData(undefined)
-}
 
+  const closePopup = () => {
+    inputRef.current.close()
+    setInput("")
+    setDate(new Date())
+    setSelectedData(undefined)
+  }
 
-  const Component = () => {
+  const renderPopupComponent = () => {
     return (
       <View style={styles.inputstyleBox}>
-        <TouchableOpacity style={{alignSelf:"flex-end", marginBottom:20}} onPress={closePopup}>
-          <Text style={{fontSize:20, fontWeight:'500', }}>Cancel</Text>
+        <TouchableOpacity style={styles.closePopupStyle} onPress={closePopup}>
+          <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
         <View style={styles.inputDate}>
           <TextInput
@@ -79,17 +79,13 @@ const closePopup=()=>{
             style={styles.inputHnalder}
           />
           <TouchableOpacity onPress={openDateHandler} style={styles.DateStyle}>
-            <Text>  {selectDate ? moment(selectDate).format('LL') : "select date"}</Text>
-
+            <Text> {selectDate ? moment(selectDate).format('LL') : "select date"}</Text>
           </TouchableOpacity>
-
-
         </View>
 
         <TouchableOpacity style={styles.button} onPress={clickHandler}>
           <Text style={{ alignSelf: "center" }}>Add Task</Text>
         </TouchableOpacity>
-
         <DatePicker
           modal
           open={open}
@@ -109,45 +105,49 @@ const closePopup=()=>{
     )
   }
 
+  const renderHeader = () => {
+    return (
+      <View style={styles.header}>
+        <View style={styles.useNamestyle}>
+          <Text style={styles.text}>Hi,</Text>
+          <Text style={styles.nameText}>{userName}</Text>
+        </View>
+        <View style={styles.profile}>
+          <Text style={styles.styleUserName}>{userImage}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  const renderListOfItem = () => <ListScreen
+    conatinerStyle={styles.listStyle}
+    data={data}
+    callBack={setData}
+  />
+
+  const rednerAddButton = () => {
+    return (
+      <TouchableOpacity onPress={inputHandler} style={styles.inputStyle}>
+        <Text style={styles.inputText}>Add new SubTask</Text>
+        <Text style={styles.addButton}>+</Text>
+      </TouchableOpacity>
+    )
+  }
 
   return (
     <>
       <BackGroundImage />
       <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.useNamestyle}>
-            <Text style={styles.text}>Hi,</Text>
-            <Text style={styles.nameText}>{userName}</Text>
-          </View>
-
-          <View style={styles.profile}>
-            <Text style={styles.styleUserName}>{userImage}</Text>
-          </View>
-        </View>
-        <View>
-          {/* <View style={{height:height-height/3}}> */}
-            <ListScreen
-              conatinerStyle={{height:height-height/3}}
-              data={data}
-              callBack={setData}
-            />
-          {/* </View> */}
-          <TouchableOpacity onPress={inputHandler} style={styles.inputStyle}>
-            <Text style={styles.inputText}>Add new SubTask</Text>
-            <Text style={styles.addButton}>+</Text>
-
-          </TouchableOpacity>
-        </View>
-
-        <CustomPopup inputRef={inputRef}
-          component={Component}
-        >
-        </CustomPopup>
-
+        {renderHeader()}
+        {renderListOfItem()}
+        {rednerAddButton()}
       </View>
-
+      <CustomPopup
+        inputRef={inputRef}
+        component={renderPopupComponent}
+      >
+      </CustomPopup>
     </>
-
   );
 }
 
@@ -156,6 +156,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginTop: 60,
     marginHorizontal: 20
+  },
+  cancelText:{
+    fontSize: 20, 
+    fontWeight: '500',
+  },
+  closePopupStyle: {
+    alignSelf: "flex-end",
+    marginBottom: 20
+  },
+  listStyle: {
+    height: height - height / 3
   },
   inputHnalder: {
     flex: 1,
@@ -216,7 +227,6 @@ const styles = StyleSheet.create({
 
   },
   inputStyle: {
-
     borderRadius: 12,
     borderWidth: 1,
     height: 50,
@@ -225,7 +235,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop:20
+    marginTop: 20
 
   },
   inputText: {
