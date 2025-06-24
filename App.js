@@ -144,8 +144,8 @@ function App() {
       </View>
       <CustomPopup
         inputRef={inputRef}
-        component={renderPopupComponent}
       >
+         {renderPopupComponent()}
       </CustomPopup>
     </>
   );

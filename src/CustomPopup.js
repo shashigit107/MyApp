@@ -1,7 +1,7 @@
 import { Modal, StyleSheet, Text, View } from 'react-native'
 import React, { forwardRef, useImperativeHandle, useEffect, useState } from 'react'
 
-const CustomPopup = forwardRef(({ component, inputRef }) => {
+const CustomPopup = forwardRef(({ children, inputRef }) => {
   const [visible, setVisible] = useState(false)
   useImperativeHandle(inputRef, () => ({
     close() {
@@ -25,7 +25,8 @@ const CustomPopup = forwardRef(({ component, inputRef }) => {
         }}
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={styles.modelView}>{component()}
+          <View style={styles.modelView}>
+            {children}
           </View>
         </View>
 
